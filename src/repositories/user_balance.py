@@ -9,13 +9,16 @@ from db.models import UserBalance
 
 class IUserBalanceRepository(ABC):
     @abstractmethod
-    async def create(self, user_id: UUID) -> UserBalance: ...
+    async def create(self, user_id: UUID) -> UserBalance:
+        ...
 
     @abstractmethod
-    async def get(self, user_id: UUID) -> UserBalance | None: ...
+    async def get(self, user_id: UUID) -> UserBalance | None:
+        ...
 
     @abstractmethod
-    async def add_balance(self, user_id: UUID, amount: int) -> UserBalance | None: ...
+    async def add_balance(self, user_id: UUID, amount: int) -> UserBalance | None:
+        ...
 
 
 class UserBalanceRepository(IUserBalanceRepository):
@@ -34,9 +37,7 @@ class UserBalanceRepository(IUserBalanceRepository):
             raise ValueError("Amount must be positive")
 
         stmt = (
-            select(UserBalance)
-            .where(UserBalance.user_id == user_id)
-            .with_for_update()
+            select(UserBalance).where(UserBalance.user_id == user_id).with_for_update()
         )
         result = await self.session.execute(stmt)
         balance = result.scalar_one_or_none()

@@ -62,7 +62,9 @@ class TestUserBalanceRepository:
         assert result is None
 
     @pytest.mark.parametrize("amount", [0, -100])
-    async def test_add_balance_invalid_amount(self, db_session: AsyncSession, amount: int):
+    async def test_add_balance_invalid_amount(
+        self, db_session: AsyncSession, amount: int
+    ):
         user_id = uuid.uuid4()
         repo = UserBalanceRepository(db_session)
 
