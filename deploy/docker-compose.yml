@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  user_balance_backend:
+    container_name: user_balance_backend
+    restart: always
+    build:
+      context: ..
+      dockerfile: build/Dockerfile
+    entrypoint: /entrypoint.sh
+    ports:
+      - "8001:8001"
+    env_file:
+      - ../environments/.env
+    depends_on:
+      - user_balance_db
+    networks:
+      - user_balance_network
+
+  user_balance_db:
+    container_name: user_balance_db
+    restart: always
+    image: postgres:17
+    ports:
+      - "5433:5432"
+    env_file:
+      - ../environments/.env
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - user_balance_network
+
+
+volumes:
+  pgdata:
+
+networks:
+  user_balance_network:
