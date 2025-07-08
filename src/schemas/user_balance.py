@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class UserBalanceResponse(BaseModel):
+    id: UUID
     user_id: UUID
     balance: int
     created_at: datetime

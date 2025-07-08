@@ -1,15 +1,14 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import func, DateTime, CheckConstraint, UUID
+from sqlalchemy import UUID, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from db.models.base import Base
 
 
-class UserBalance(Base):
-    __tablename__ = "user_balances"
-    __table_args__ = (CheckConstraint("balance >= 0", name="non_negative_balance"),)
+class UserBalanceTransaction(Base):
+    __tablename__ = "user_balance_transactions"
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -17,16 +16,16 @@ class UserBalance(Base):
         default=uuid.uuid4,
     )
     user_id: Mapped[uuid.UUID] = mapped_column(index=True)
-    balance: Mapped[int]
+    amount: Mapped[int]
+    amount_before: Mapped[int]
+    amount_after: Mapped[int]
+
+    # metadata
+    transaction_type: Mapped[str]  # Quiz reward, Purchase etc ...
+    balance_id: Mapped[uuid.UUID] = mapped_column(nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
-        nullable=False,
-    )
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        onupdate=func.now(),
         nullable=False,
     )

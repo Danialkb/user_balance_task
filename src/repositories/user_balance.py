@@ -28,14 +28,11 @@ class UserBalanceRepository(IUserBalanceRepository):
     async def create(self, user_id: UUID) -> UserBalance:
         balance = UserBalance(user_id=user_id, balance=0)
         self.session.add(balance)
-        await self.session.commit()
-        await self.session.refresh(balance)
         return balance
 
     async def add_balance(self, user_id: UUID, amount: int) -> UserBalance | None:
         if amount <= 0:
             raise ValueError("Amount must be positive")
-
         stmt = (
             select(UserBalance).where(UserBalance.user_id == user_id).with_for_update()
         )
@@ -46,9 +43,10 @@ class UserBalanceRepository(IUserBalanceRepository):
             return
 
         balance.balance += amount
-        await self.session.commit()
-        await self.session.refresh(balance)
         return balance
+
+    async def refresh(self, balance: UserBalance):
+        await self.session.refresh(balance)
 
     async def get(self, user_id: UUID) -> UserBalance | None:
         stmt = select(UserBalance).where(UserBalance.user_id == user_id)
