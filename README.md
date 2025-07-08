@@ -18,4 +18,5 @@ Get balance for specific user provided with X-User-ID header. Raises 404 if bala
 
 
 ## /api/v1/user_balance/add
-Adds balance for specific user account, if account doesn't exists it will be automatically creeated
+Adds balance for specific user account, if account doesn't exists it will be automatically created.
+Update transaction will be written in user_balance_transactions table.
