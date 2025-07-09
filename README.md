@@ -1,4 +1,5 @@
-Deploy instructions (LOCAL). Execute from root directory of project (user_balance_task)
+## !!! You should first deploy Quiz Task
+## Deploy instructions (LOCAL). Execute from root directory of project (user_balance_task)
 > docker compose -f deploy/docker-compose.yml up --build -d
 
 
