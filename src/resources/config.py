@@ -24,5 +24,12 @@ class Settings(ConfigBase):
 
     ALLOWED_ORIGINS: list[str] = ["*"]
 
+    # Rabbit
+    RABBITMQ_URL: str
+    BALANCE_EXCHANGE: str
+    BALANCE_QUEUE: str
+    BALANCE_EXCHANGE_TYPE: str
+    BALANCE_ROUTING_KEY: str
+
 
 settings = Settings()

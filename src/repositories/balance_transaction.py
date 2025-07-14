@@ -9,7 +9,7 @@ from db.models import UserBalanceTransaction
 
 class IUserBalanceTransactionRepository(ABC):
     @abstractmethod
-    async def create(
+    def create(
         self,
         user_id: UUID,
         amount: int,
@@ -25,7 +25,7 @@ class UserBalanceTransactionRepository(IUserBalanceTransactionRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create(
+    def create(
         self,
         user_id: UUID,
         amount: int,

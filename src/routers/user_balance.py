@@ -24,14 +24,3 @@ async def get_user_balance(
     if not balance:
         raise HTTPException(status_code=404, detail="Balance not found")
     return balance
-
-
-@router.post("/add")
-async def add_user_balance(
-    data: UserBalanceAddSchema,
-    user_id: UUID = Depends(get_user_id),
-    session: AsyncSession = Depends(get_session),
-) -> UserBalanceResponse:
-    uow = UnitOfWork(session)
-    balance_service = UserBalanceService(uow)
-    return await balance_service.add_to_balance(user_id, data.amount)

@@ -1,8 +1,8 @@
 version: "3.9"
 
 services:
-  user_balance_backend:
-    container_name: user_balance_backend
+  balance_backend:
+    container_name: balance_backend
     restart: always
     build:
       context: ..
@@ -13,12 +13,12 @@ services:
     env_file:
       - ../environments/.env.local
     depends_on:
-      - user_balance_db
+      - balance_db
     networks:
       - deploy_zimran_network
 
-  user_balance_db:
-    container_name: user_balance_db
+  balance_db:
+    container_name: balance_db
     restart: always
     image: postgres:17
     ports:
@@ -32,9 +32,37 @@ services:
     networks:
       - deploy_zimran_network
 
+  balance_update_consumer:
+    container_name: balance_update_consumer
+    build:
+      context: ..
+      dockerfile: build/Dockerfile
+    entrypoint: uv run python -m messaging.consumer.balance_update
+    env_file:
+      - ../environments/.env.local
+    depends_on:
+      - balance_rabbitmq
+    networks:
+      - deploy_zimran_network
+
+  balance_rabbitmq:
+    container_name: balance_rabbitmq
+    image: rabbitmq:4-management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "admin"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - deploy_zimran_network
 
 volumes:
   balance_db_data:
+  rabbitmq_data:
 
 networks:
   deploy_zimran_network:

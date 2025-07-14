@@ -9,11 +9,15 @@ from db.models import UserBalance
 
 class IUserBalanceRepository(ABC):
     @abstractmethod
-    async def create(self, user_id: UUID) -> UserBalance:
+    def create(self, user_id: UUID) -> UserBalance:
         ...
 
     @abstractmethod
     async def get(self, user_id: UUID) -> UserBalance | None:
+        ...
+
+    @abstractmethod
+    async def refresh(self, balance: UserBalance):
         ...
 
     @abstractmethod
@@ -25,7 +29,7 @@ class UserBalanceRepository(IUserBalanceRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create(self, user_id: UUID) -> UserBalance:
+    def create(self, user_id: UUID) -> UserBalance:
         balance = UserBalance(user_id=user_id, balance=0)
         self.session.add(balance)
         return balance

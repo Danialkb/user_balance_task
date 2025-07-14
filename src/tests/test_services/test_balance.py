@@ -8,11 +8,11 @@ from repositories.user_balance import UserBalanceRepository
 
 
 class TestUserBalanceRepository:
-    async def test_create(self, db_session: AsyncSession):
+    def test_create(self, db_session: AsyncSession):
         user_id = uuid.uuid4()
         repo = UserBalanceRepository(db_session)
 
-        result = await repo.create(user_id)
+        result = repo.create(user_id)
 
         assert isinstance(result, UserBalance)
         assert result.user_id == user_id

@@ -12,22 +12,23 @@ class UserBalanceService:
     def __init__(self, uow: IUnitOfWork):
         self.uow = uow
 
-    async def add_to_balance(self, user_id: UUID, amount: int) -> UserBalanceResponse:
+    async def add_to_balance(self, user_id: UUID, amount: int, transaction_type: TransactionType) -> UserBalanceResponse:
         logger.info(f"Adding balance bonus for User<{user_id}>")
         user_balance = await self.get_user_balance(user_id)
         if not user_balance:
             user_balance = await self.create(user_id)
+
         async with self.uow as uow_instance:
             balance_amount_before = user_balance.balance
             user_balance = await uow_instance.user_balance_repo.add_balance(
                 user_id, amount
             )
-            await uow_instance.balance_transaction_repo.create(
+            uow_instance.balance_transaction_repo.create(
                 user_id=user_id,
                 amount=amount,
                 amount_before=balance_amount_before,
                 amount_after=user_balance.balance,
-                transaction_type=TransactionType.QUIZ_REWARD,
+                transaction_type=transaction_type.value,
                 balance_id=user_balance.id,
             )
             await uow_instance.commit()
@@ -37,7 +38,7 @@ class UserBalanceService:
     async def create(self, user_id: UUID) -> UserBalanceResponse:
         logger.info(f"Creating balance account User<{user_id}>")
         async with self.uow as uow_instance:
-            balance = await uow_instance.user_balance_repo.create(user_id)
+            balance = uow_instance.user_balance_repo.create(user_id)
         return UserBalanceResponse.model_validate(balance)
 
     async def get_user_balance(self, user_id: UUID) -> UserBalanceResponse | None:
