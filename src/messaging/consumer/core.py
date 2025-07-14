@@ -26,7 +26,10 @@ class BalanceMessageConsumer:
             logger.info(f"Processing message: {data}")
             validated_message = BalanceUpdateMessage.model_validate(data)
         except (json.JSONDecodeError, pydantic.ValidationError) as e:
-            logger.error(f"Invalid message format: {e}, message body: {message.body}", exc_info=True)
+            logger.error(
+                f"Invalid message format: {e}, message body: {message.body}",
+                exc_info=True,
+            )
             await message.nack(requeue=False)
             return
 

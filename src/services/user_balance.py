@@ -12,7 +12,9 @@ class UserBalanceService:
     def __init__(self, uow: IUnitOfWork):
         self.uow = uow
 
-    async def add_to_balance(self, user_id: UUID, amount: int, transaction_type: TransactionType) -> UserBalanceResponse:
+    async def add_to_balance(
+        self, user_id: UUID, amount: int, transaction_type: TransactionType
+    ) -> UserBalanceResponse:
         logger.info(f"Adding balance bonus for User<{user_id}>")
         user_balance = await self.get_user_balance(user_id)
         if not user_balance:

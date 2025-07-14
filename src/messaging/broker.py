@@ -1,8 +1,13 @@
 from typing import Callable, Awaitable, Any
 
 import aio_pika
-from aio_pika.abc import AbstractRobustConnection, AbstractChannel, AbstractExchange, AbstractQueue, \
-    AbstractIncomingMessage
+from aio_pika.abc import (
+    AbstractRobustConnection,
+    AbstractChannel,
+    AbstractExchange,
+    AbstractQueue,
+    AbstractIncomingMessage,
+)
 
 from messaging.config import RabbitConfig
 
@@ -32,10 +37,12 @@ class MessageBroker:
 
         queue_args = {}
         if needs_dlq:
-            queue_args.update({
-                "x-dead-letter-exchange": f"{self.config.EXCHANGE_NAME}.dlx",
-                "x-dead-letter-routing-key": f"{self.config.QUEUE_NAME}.dlq",
-            })
+            queue_args.update(
+                {
+                    "x-dead-letter-exchange": f"{self.config.EXCHANGE_NAME}.dlx",
+                    "x-dead-letter-routing-key": f"{self.config.QUEUE_NAME}.dlq",
+                }
+            )
 
         self.queue = await self.channel.declare_queue(
             name=self.config.QUEUE_NAME,
@@ -67,9 +74,9 @@ class MessageBroker:
         )
 
     async def consume(
-            self,
-            callback: Callable[[AbstractIncomingMessage], Awaitable[Any]],
-            no_ack: bool = False,
+        self,
+        callback: Callable[[AbstractIncomingMessage], Awaitable[Any]],
+        no_ack: bool = False,
     ):
         if not self.queue:
             raise RuntimeError("Queue not initialized. Call connect() first.")

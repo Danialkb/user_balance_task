@@ -48,7 +48,7 @@ async def test_process_valid_message_calls_service_and_acks(consumer, broker):
     msg = make_message(valid_payload)
 
     mock_handle = AsyncMock()
-    with patch.object(consumer, '_handle_message', new=mock_handle):
+    with patch.object(consumer, "_handle_message", new=mock_handle):
         await consumer.process_message(msg)
 
         msg.ack.assert_awaited_once()
@@ -56,8 +56,8 @@ async def test_process_valid_message_calls_service_and_acks(consumer, broker):
 
 
 async def test_invalid_json_nacks_without_requeue(consumer):
-    msg = make_message(b'not a valid json')
-    msg.body = b'not a valid json'
+    msg = make_message(b"not a valid json")
+    msg.body = b"not a valid json"
 
     await consumer.process_message(msg)
 
@@ -83,7 +83,7 @@ async def test_unexpected_error_nacks_maybe_requeue(consumer):
     }
 
     mock_handle = AsyncMock(side_effect=Exception("Test error"))
-    with patch.object(consumer, '_handle_message', new=mock_handle):
+    with patch.object(consumer, "_handle_message", new=mock_handle):
         msg = make_message(payload, redelivered=False)
         await consumer.process_message(msg)
 
